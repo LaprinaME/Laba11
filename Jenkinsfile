@@ -10,9 +10,17 @@ pipeline {
 
         stage('Set up Python') {
             steps {
-                sh 'python -m venv venv'
-                sh '. venv/bin/activate'
-                sh 'pip install -r requirements.txt'
+                script {
+                    // Проверка операционной системы
+                    if (isUnix()) {
+                        sh 'python -m venv venv'
+                        sh '. venv/bin/activate'  // Для Linux/Mac
+                    } else {
+                        bat 'python -m venv venv'
+                        bat 'venv\\Scripts\\activate'  // Для Windows
+                    }
+                    sh 'pip install -r requirements.txt'
+                }
             }
         }
 
